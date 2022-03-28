@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hello World</title>
+	<meta charset="utf-8" />
+
+	<!-- style sheets -->
+	<link rel="stylesheet" href="css/style.css">
+
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+
+</head>
+<body>
+<!--we have several divisions on our website, which css helps to organize
+spatially -->
+	<div class="header">
+		Hello World. This is a map of the places in Malaysia that are special to me. 
+	</div>
+	<div class="sidebar">
+		My Sidebar
+	</div>
+	<div class="content">
+		<div id="map"></div>
+        If you like pina coladas
+	</div>
+    
+    <script>
+        var map = L.map('map').setView([3.139,101.6869], 10);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var marker = L.marker([3.139,101.6869]).addTo(map)
+            .bindPopup('Welcome home </br> Edryna Lives Here')
+            .openPopup();	
+    
+    var circle = L.circle([3.139,101.6869], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 500
+        }).addTo(map);
+
+    var marker = L.marker([2.8199, 101.6237]).addTo(map)
+        .bindPopup('Edryna&apos;s high school')
+        .openPopup();	
+    
+    var circle = L.circle([2.8199, 101.6237], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 500
+        }).addTo(map);
+
+    var marker = L.marker([3.1597, 101.714]).addTo(map)
+        .bindPopup('Edryna&apos;s favorite restaurant')
+        .openPopup();	
+
+    var circle = L.circle([3.1597, 101.714], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 500
+        }).addTo(map);
+    </script>
+
+</body>
+</html>
