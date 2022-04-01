@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>About Me</title>
+    <div class="header">
+        <h1>About Me</h1>
+        <meta charset="utf-8" />
+    </div>
+
+	<!-- style sheets -->
+	<link rel="stylesheet" href="css/style.css">
+
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+
+</head>
+<body>
+<!--we have several divisions on our website, which css helps to organize
+spatially -->
+	<div class="sidebar">
+		<p>Hello <i>Yoh</i> and <i>Classmates</i>. <br><br>
+            I am <a href = "https://www.linkedin.com/in/edryna-syfinaz-zarif-ahmed-zaharani/">Edryna Zarif</a>, a 23 year old human trying to live her best life on this planet.<br>
+            <img src = "https://static.wixstatic.com/media/c06c95_dd4913a88cf945cfa9a1c99b2b548877~mv2_d_1537_2305_s_2.jpg/v1/fill/w_222,h_277,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/IMG_0171_edited.jpg"
+            width = "150 px"><br>
+            I <b>love</b> to 
+            <ul>
+                <li>learn about </li>
+                <ul><li>Economics</li>
+                    <li>Philosophy</li>
+                    <li>Psychology</li>
+                </ul>
+                <li>eat</li>
+                <ul><li>Malaysian cuisine</li>
+                    <li>Mexican cuisine</li>
+                    <li>Ramen</li>
+                </ul>
+                <li>travel</li>
+                <li>hang out with cool people</li>
+            </ul>
+            I was born and raised in <a href = "https://www.instagram.com/p/CaUVoFFhRfL/">Kuala Lumpur, Malaysia.</a> I will show you all of my favorite spots on this website. <br><br>
+            I am a senior in college. I am currently having the timem of my life as a college student in Los Angeles. <br><br>
+            Let me know if you've ever been to my home country, Kuala Lumpur. <br><br>
+            <input type="checkbox" name="yes" value="Yes">yes, and God it's so humid<br>
+            <input type="checkbox" name="no" value="No"> no, but I will go one day!<br>
+            <!--add text input for people to comment -->
+
+        </p> 
+	</div>
+	
+	<div class="content">
+		<div id="map"></div>
+       <h2>Spots in Malaysia</h2>
+	</div>
+    
+    <script>
+        var map = L.map('map').setView([3.139,101.6869], 10);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var marker = L.marker([3.139,101.6869]).addTo(map)
+            .bindPopup('Welcome home </br> Edryna Lives Here')
+            .openPopup();	
+    
+    var circle = L.circle([3.139,101.6869], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 500
+        }).addTo(map);
+
+    var marker = L.marker([2.8199, 101.6237]).addTo(map)
+        .bindPopup('Edryna&apos;s high school')
+        .openPopup();	
+    
+    var circle = L.circle([2.8199, 101.6237], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 500
+        }).addTo(map);
+
+    var marker = L.marker([3.1597, 101.714]).addTo(map)
+        .bindPopup('Edryna&apos;s favorite restaurant')
+        .openPopup();	
+
+    var circle = L.circle([3.1597, 101.714], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 500
+        }).addTo(map);
+    </script>
+    
+</body>
+</html>
