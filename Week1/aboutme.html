@@ -39,8 +39,8 @@ spatially -->
                 <li>travel</li>
                 <li>hang out with cool people</li>
             </ul>
-            I was born and raised in <a href = "https://www.instagram.com/p/CaUVoFFhRfL/">Kuala Lumpur, Malaysia.</a> I will show you all of my favorite spots on this website. <br><br>
-            I am a senior in college. I am currently having the time of my life as a college student in Los Angeles. <br><br>
+            I was born and raised in <a href = "https://www.instagram.com/p/CaUVoFFhRfL/">Kuala Lumpur, Malaysia.</a> I will show you some of my favorite spots on this website. <br><br>
+            I am a senior in college, currently having the time of my life as a college student in Los Angeles. <br><br>
             Let me know if you've ever been to my home country, Kuala Lumpur. <br><br>
             <input type="checkbox" name="yes" value="Yes">yes, and God it's so humid<br>
             <input type="checkbox" name="no" value="No"> no, but I will go one day!<br>
@@ -62,7 +62,7 @@ spatially -->
     }).addTo(map);
 
     var marker = L.marker([3.139,101.6869]).addTo(map)
-            .bindPopup('Welcome home </br> Edryna Lives Here')
+            .bindPopup('A sacred, secret, spot')
             .openPopup();	
     
     var circle = L.circle([3.139,101.6869], {
@@ -73,7 +73,7 @@ spatially -->
         }).addTo(map);
 
     var marker = L.marker([3.0522, 101.6756]).addTo(map)
-        .bindPopup('Edryna&apos;s favorite park')
+        .bindPopup('Bukit Jalil Park <br> My favorite park')
         .openPopup();
         
      var circle = L.circle([3.0522, 101.6756], {
@@ -84,7 +84,7 @@ spatially -->
         }).addTo(map);
 
      var marker = L.marker([3.1298, 101.671]).addTo(map)
-        .bindPopup('The best waffles in town')
+        .bindPopup('The Daily Grind <br> The best waffles in town')
         .openPopup();
         
      var circle = L.circle([3.1298, 101.671], {
@@ -94,25 +94,11 @@ spatially -->
         radius: 500
         }).addTo(map);
 
-        var marker = L.marker([4.2988, 101.254]).addTo(map)
-        .bindPopup('My favorite waterfall')
-        .openPopup();
-        
-     var circle = L.circle([4.2988, 101.254], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 500
-        }).addTo(map);
+    
 
-	
-
-    var circle = L.circle([2.8199, 101.6237], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 500
-        }).addTo(map);
+    var marker = L.marker([2.8199, 101.6237]).addTo(map)
+        .bindPopup('Sri Cempaka <br> My high school')
+        .openPopup();	
     
     var circle = L.circle([2.8199, 101.6237], {
         color: 'red',
@@ -122,7 +108,7 @@ spatially -->
         }).addTo(map);
 
     var marker = L.marker([3.1597, 101.714]).addTo(map)
-        .bindPopup('Edryna&apos;s favorite restaurant')
+        .bindPopup('Dolly Dim Sum <br>Edryna&apos;s favorite restaurant')
         .openPopup();	
 
     var circle = L.circle([3.1597, 101.714], {
