@@ -75,7 +75,8 @@ spatially -->
 			'title':'Singapore',
 			'lat': 1.3521,
 			'lon': 103.8198,
-			'descrip':'I only spent one night here but loved the airport, shopping and cleanliness of Singapore. I want to return!'
+			'descrip':'I only spent one night here but loved the airport, shopping and cleanliness of Singapore. I want to return!',
+			'img':'singapore.jpg'
 		},
 		{
 			'title':'Jakarta',
@@ -89,7 +90,7 @@ spatially -->
 
 	data.forEach(function(item){
             L.marker([item.lat, item.lon]).addTo(map)
-            	.bindPopup("<b>" + item.title  + "</b>" + "<br>" +  item.descrip 
+            	.bindPopup("<b>" + item.title  + "</b>" + "<br>" +  "<img class = '.pic' src='" + item.img + "' width='200' height='200'/>" + "<br>" + item.descrip 
 	)});
 </script>
 
