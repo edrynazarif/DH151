@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My World</title>
+	<meta charset="utf-8" />
+
+	<!-- style sheets -->
+	<link rel="stylesheet" href="css/style.css">
+
+	<!-- leaflet -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+</head>
+<body>
+<!--we have several divisions on our website, which css helps to organize
+spatially -->
+
+	<div class="header">
+		<br>Where I've Been in South East Asia
+	</div>
+	<div class="sidebar">
+		<h2>The Details</h2>
+		<p>South East Asia is a small region that is rarely visible to the Western audience. Growing up in Malaysia, I had a different experience. SEA was my go-to destination for holidays with friends and family. I visited these cities :  </p>
+		<br>
+		<!-- Make List -->
+		<ul>
+			<li>Phuket, Thailand</li>
+			<li>Krabi, Thailand</li>
+			<li>Siem Reap, Cambodia</li>
+			<li>Jakarta, Indonesia</li>
+			<li>Singapore</li>
+		</ul>
+	
+	</div>
+	<div class="content">
+		<h3>&#160&#160A map of where I've been</h3> 
+		<div id="map"></div>
+	</div>
+
+	<script>
+		var map = L.map('map').setView([2.2180, 115.66], 5);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+		
+		//create an array of objects that lists at least five locations. Make sure to include a title, description, latitude, and longitude for each//
+	
+		let data = [
+		{
+			'title':'Phuket',
+			'lat': 7.8804,
+			'lon': 98.3923,
+			'descrip': 'I spent Summer 2018 with my high school friends here island hopping, enjoying the vibrant night life and amazing food of Thailand.'
+			
+		},
+		{
+			'title':'Siem Reap',
+			'lat': 13.3633,
+			'lon': 103.8564,
+			'descrip': 'I spent Winter 2017 with my high school friends here executing a community service project. We also got to enjoy the vibrant night life, ride a boat across the Tonle Sap and of course, marvel at the Angkor Wat Temple.'
+		
+		},
+		{
+			'title':'Krabi',
+			'lat': 8.0863,
+			'lon': 98.9063,
+			'descrip': 'I spent Winter 2016 here with my family island-hopping, eating crispy omelettes, sipping refreshing mango shakes and ATV-riding in the mud.'
+		},
+		{
+			'title':'Singapore',
+			'lat': 1.3521,
+			'lon': 103.8198,
+			'descrip':'I only spent one night here but loved the airport, shopping and cleanliness of Singapore. I want to return!'
+		},
+		{
+			'title':'Jakarta',
+			'lat': -6.2088,
+			'lon': 106.8456,
+			'descrip':'I spent Winter 2018 here with my family shopping for traditional clothing and amazing food. I tasted cow brain in Jakarta.'
+		}
+	];
+	//Replace the code that generates the single marker with a loop that goes through your array of objects. Then, create a marker for each location. Make sure to include a title and description in the popup.//
+
+	data.forEach(function(item){
+            L.marker([item.lat, item.lon]).addTo(map)
+            	.bindPopup("<b>" + item.title  + "</b>" + "<br>" + item.descrip)});
+</script>
+
+
+</body>
+</html>
