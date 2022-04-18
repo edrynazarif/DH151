@@ -3,6 +3,7 @@
         {
             'id':0,
             'title':'Phuket',
+            'country':'Thailand',
 			'lat': 7.8804,
 			'lon': 98.3923,
 			'descrip': 'I spent Summer 2018 with my high school friends here island hopping, enjoying the vibrant night life and amazing food of Thailand.',
@@ -12,6 +13,7 @@
 		{
 			'id':1,
             'title':'Siem Reap',
+            'country':'Cambodia',
 			'lat': 13.3633,
 			'lon': 103.8564,
 			'descrip': 'I spent Winter 2017 with my high school friends here executing a community service project. We also got to enjoy the vibrant night life, ride a boat across the Tonle Sap and of course, marvel at the Angkor Wat Temple.',
@@ -21,6 +23,7 @@
 		{
 			'id':2,
             'title':'Krabi',
+            'country':'Thailand',
 			'lat': 8.0863,
 			'lon': 98.9063,
 			'descrip': 'I spent Winter 2016 here with my family island-hopping, eating crispy omelettes, sipping refreshing mango shakes and ATV-riding in the mud.',
@@ -29,6 +32,7 @@
 		{
 			'id':3,
             'title':'Singapore',
+            'country':'Singapore',
 			'lat': 1.3521,
 			'lon': 103.8198,
 			'descrip':'I only spent one night here but loved the airport, shopping and cleanliness of Singapore. I want to return!',
@@ -86,7 +90,14 @@
     // loop through data 
     // create marker
     data.forEach(function(item){
-        let marker = L.marker([item.lat,item.lon]).addTo(map)
+        let marker = L.marker([item.lat,item.lon]
+            // map marker icons
+               // {icon: new L.Icon({
+                //iconUrl: `./countryflags/${item.title}.png`,
+                //iconSize: [50, 30],
+                //iconAnchor: [10, 0],
+                )
+            .addTo(map)
             .bindPopup(`<div><strong>${item.title}</strong><br>
             <img class = '.pic' src=${item.img} width='200' height='200'/><br>${item.descrip}</div>`, {maxHeight:'100px'})
         
