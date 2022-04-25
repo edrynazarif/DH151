@@ -103,7 +103,7 @@ function mapCSV(data){
         map.fitBounds(markers.getBounds())
         }
 
-        // Make it so that when we hover over the image, it will take us to the marker
+        // Make it so that when we hover over the image, it will take us
 
         function panToImage(index){
             // zoom to level 17 first
