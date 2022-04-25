@@ -25,7 +25,7 @@ $( document ).ready(function() {
 // create the map function
 // lat, lon, zl were defined in global variables above 
 function createMap(lat,lon,zl){
-	map = L.map('map').setView([lat,lon],zl);
+	map = L.map('map').setView([lat,lon], zl);
 
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -88,10 +88,10 @@ function mapCSV(data){
             let marker = L.circleMarker([item.latitude,item.longitude],circleOptions)
 
             // Adding on a hover event (instead of onclick)
-            .on("mouseover",function(){
-                this.bindPopup(`${item.title}<br>${item.minwage}`).openPopup()
+            //.on('mouseover',function(){
+                this.bindPopup(`${item.title}<br>${item.minwage}</br>`).openPopup()
             
-            })
+            //})
     
             // add marker to featuregroup		
             markers.addLayer(marker) 
