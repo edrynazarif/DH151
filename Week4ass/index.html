@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>World</title>
+	<meta charset="utf-8" />
+
+	<!-- style sheets -->
+	<link rel="stylesheet" href="css/style.css">
+
+	<!-- leaflet -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+	<!-- jquery -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <!-- add papaparse-->
+    <script src="js/papaparse.min.js"></script>
+
+</head>
+<body>
+
+	<div class="header">
+		Minimum Wages Around the World 
+	</div>
+	<div class="sidebar">
+		There is always the question of whether it is better to have a nation where everyone is poor or a nation where some are rich and most are poor. The imposition of minimum wages is one of the potential measures taken to lower poverty rates. 
+		<br><br>
+		Hover over each country to learn what the current minimum wage rates are in 2020. 
+		<br> <br>
+		 How do we interpret this data? Does a lower minimum wage rate lead to a lower poverty rate? The answer of course, is that, it depends.
+
+		 <br> <br> T.H. Gindling, researcher of the World of Labor, claims that whether or not  minimum wages reduces poverty depends not only on whether formal sector workers lose jobs as a result, but also on whether low-wage workers live in poor households, how widely minimum wages are enforced, how minimum wages affect informal workers, and whether social safety nets are in place. 
+	</div>
+	<div class="content">
+		<div id="map"></div>
+	</div>
+    <!--introducing footer-->
+	<div class="footer">
+		Source: <a href="http://digitallibrary.usc.edu/cdm/landingpage/collection/p15799coll15">USC Libraries</a>
+	</div>
+
+	<script src="js/map.js"></script>
+
+</body>
+</html>
