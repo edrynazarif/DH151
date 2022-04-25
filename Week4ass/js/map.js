@@ -5,7 +5,7 @@
 let map;
 let lat = 0;
 let lon = 0;
-let zl = 3;
+let zl = 1;
 // global variables
 let markers = L.featureGroup();
 
@@ -25,12 +25,16 @@ $( document ).ready(function() {
 // create the map function
 // lat, lon, zl were defined in global variables above 
 function createMap(lat,lon,zl){
-	map = L.map('map').setView([lat,lon], zl);
+	map = L.map('map').setView([lat,lon],zl);
 
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 	}).addTo(map);
 }
+
+function flyToIndex(lat, lon){
+	map.flyTo([lat,lon],3)
+};
 
 // read csv data function 
 function readCSV(path){
@@ -48,7 +52,7 @@ function readCSV(path){
 	});
 }
     // after data is read, it executes function using the data 
-    function mapCSV(data){
+    // function mapCSV(data){
 	
 	// loop through each entry. because we're using papa parse data, we must name "data.data"
 	    // data.data.forEach(function(item,index){
@@ -64,7 +68,7 @@ function readCSV(path){
 
 	// fit markers to map so that it zooms out to all the points in your data
 	//map.fitBounds(markers.getBounds())
-}
+
 
     // alternatively, we can use circle markers and rewrite function mapCSV (data) as 
 function mapCSV(data){
@@ -73,8 +77,8 @@ function mapCSV(data){
         let circleOptions = {
             radius: 5,
             weight: 1,
-            color: 'white',
-            fillColor: 'dodgerblue',
+            color: 'black',
+            fillColor: 'red',
             fillOpacity: 1
         }
     
@@ -84,30 +88,18 @@ function mapCSV(data){
             let marker = L.circleMarker([item.latitude,item.longitude],circleOptions)
 
             // Adding on a hover event (instead of onclick)
-            .on('mouseover',function(){
-                this.bindPopup(`${item.title}<br><img src="${item.thumbnail_url}">`).openPopup()
+            .on("mouseover",function(){
+                this.bindPopup(`${item.title}<br>${item.minwage}`).openPopup()
             
             })
     
             // add marker to featuregroup		
-            markers.addLayer(marker)
-
-            // add entry to sidebar
-            $('.sidebar').append(`<img src="${item.thumbnail_url}" onmouseover="panToImage(${index})">`)
-            })
+            markers.addLayer(marker) 
+         })
     
         // add featuregroup to map
         markers.addTo(map)
     
         // fit markers to map
         map.fitBounds(markers.getBounds())
-        }
-
-        // Make it so that when we hover over the image, it will take us to the marker
-
-        function panToImage(index){
-            // zoom to level 17 first
-            map.setZoom(17);
-            // pan to the marker
-            map.panTo(markers.getLayers()[index]._latlng);
-        }
+     }
