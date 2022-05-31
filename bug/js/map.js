@@ -3,252 +3,444 @@ let map;
 let lat = 0;
 let lon = 0;
 let zl = 3;
-
-// put this in your global variables
-let geojsonPath = 'data/laborinthworld.geojson';
-let geojson_data;
-let geojson_layer;
-
-let brew = new classyBrew();
-let legend = L.control({position: 'bottomright'});
-let info_panel = L.control();
-
-
-//path to csv data
 let path = 'data/laborinthdata.csv';
 let markers = L.featureGroup();
 let povertyMarkers = L.featureGroup(); 
 let csvdata;
 
-const wpRGB = [51, 255, 255];
-const liRGB = [51, 255, 0];
+let brewEP = new classyBrew();
+let brewMP = new classyBrew(); 
+let brewNP = new classyBrew(); 
+let brew2 = new classyBrew(); 
+
+// geojson
+let geojsonPath = 'data/laborinthworld.geojson';
+let geojson_data;
+
+let geojson_layer2;
+
+let geojson_layerEP;
+let geojson_layerMP; 
+let geojson_layerNP; 
+
+
+//legend
+let legend = L.control({position: 'bottomright'});
+let info_panel = L.control({position: "topright"});
 
 // initialize
 $( document ).ready(function() {
     createMap(lat,lon,zl);
-    getGeoJSON();
-    readCSV(path);
+	readCSV(path);
+	getGeoJSON();
 });
+
+// function to get the geojson data
+function getGeoJSON(){
+
+	$.getJSON(geojsonPath,function(data){
+		// put the data in a global variable
+		geojson_data = data;
+
+		// call the map function
+		mapGeoJSON('ExtremePoor', 'ModeratePoor', 'NearPoor', 'OverallFairLabor');
+	})
+}
+
+// function to map a geojson file
+function mapGeoJSON(extremePoverty, moderatePoverty, nearPoverty, laborIndex){
+
+	let EPvalues = [];
+	let MPvalues = [];
+	let NPvalues = [];
+	let LIvalues = [];
+
+	geojson_data.features.forEach(function(item,index){
+		if (item.properties[extremePoverty] == "" || item.properties[extremePoverty] == undefined){
+			item.properties[extremePoverty] = -1
+		}
+
+		if (item.properties[moderatePoverty] == "" || item.properties[moderatePoverty] == undefined){
+			item.properties[moderatePoverty] = -1
+		}
+
+		if (item.properties[nearPoverty] == "" || item.properties[nearPoverty] == undefined){
+			item.properties[nearPoverty] = -1
+		}
+
+		if (item.properties[laborIndex] == "" || item.properties[laborIndex] == undefined){
+			item.properties[laborIndex] = -1
+		}
+
+		EPvalues.push(item.properties[extremePoverty])
+		MPvalues.push(item.properties[moderatePoverty])
+		NPvalues.push(item.properties[nearPoverty])
+		LIvalues.push(item.properties[laborIndex])
+	})
+
+	extrPov = extremePoverty;
+	modPov = moderatePoverty;
+	nPov = nearPoverty; 
+	labInd = laborIndex;
+
+	brewEP.setSeries(EPvalues);
+	brewEP.setNumClasses(5);
+	brewEP.setColorCode('Blues');
+	brewEP.classify('quantiles');
+
+	brewEP.setSeries(MPvalues);
+	brewEP.setNumClasses(5);
+	brewEP.setColorCode('Blues');
+	brewEP.classify('quantiles');
+
+	brewEP.setSeries(NPvalues);
+	brewEP.setNumClasses(5);
+	brewEP.setColorCode('Blues');
+	brewEP.classify('quantiles');
+
+	brew2.setSeries(LIvalues);
+	brew2.setNumClasses(4);
+	brew2.setColorCode('Reds')
+	brew2.classify('quantiles');
+
+	// create the layer and add to map
+	geojson_layer2 = L.geoJson(geojson_data, {
+		style: getStyle2, 
+		onEachFeature: onEachFeature2
+	}).addTo(map);
+	
+	geojson_layerEP = L.geoJson(geojson_data, {
+		style: getStyleEP, 
+		onEachFeature: onEachFeatureEP
+	}).addTo(map);
+
+	geojson_layerMP = L.geoJson(geojson_data, {
+		style: getStyleMP, 
+		onEachFeature: onEachFeatureMP
+	});
+
+	geojson_layerNP = L.geoJson(geojson_data, {
+		style: getStyleNP, 
+		onEachFeature: onEachFeatureNP
+	});
+
+	let layers = {
+        "Extreme Poverty": geojson_layerEP,
+		"Moderate Poverty": geojson_layerMP, 
+		"Near Poverty": geojson_layerNP,
+    }
+
+	L.control.layers(null,layers).addTo(map)
+
+	// fit to bounds
+	map.fitBounds(geojson_layer2.getBounds())
+
+	createLegend();
+	createInfoPanel();
+}
+
 
 // create the map
 function createMap(lat,lon,zl){
-    map = L.map('map').setView([lat,lon], zl);
+	map = L.map('map').setView([lat,lon], zl);
 
-    var Stamen_TonerBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-background/{z}/{x}/{y}{r}.{ext}', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    subdomains: 'abcd',
-    minZoom: 0,
-    maxZoom: 20,
-    ext: 'png'
-    }).addTo(map);
+	var Stamen_TonerBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-background/{z}/{x}/{y}{r}.{ext}', {
+		attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		subdomains: 'abcd',
+		minZoom: 0,
+		maxZoom: 20,
+		ext: 'png'
+		}).addTo(map);
+	
 }
 
 // function to read csv data
 function readCSV(){
-    Papa.parse(path, {
-        header: true,
-        download: true,
-        complete: function(data) {
-            console.log(data);
-            // put the data in a global variable
-            csvdata = data;
+	Papa.parse(path, {
+		header: true,
+		download: true,
+		complete: function(data) {
+			// put the data in a global variable
+			csvdata = data;
 
-            // map the data for the given date
-            mapCSV();
-        }
-    });
+			// map the data for the given date
+			mapCSV();
+		}
+	});
 }
+
 
 function mapCSV(){
 
-    // clear layers in case you are calling this function more than once
-    markers.clearLayers();
+	// clear layers in case you are calling this function more than once
+	markers.clearLayers();
 
-    // loop through each entry
-    csvdata.data.forEach(function(item,index){
-        if(item.OverallFairLabor != undefined){
-            // circle options
-             let circleOptions = {
-                radius: item.OverallFairLabor*2,　// call a function to determine radius size
-                weight: 1,
-                color: 'white',
-                fillColor: 'navy',
-                fillOpacity: 0.5
-            }
-            let marker = L.circleMarker([item.Latitude,item.Longitude], circleOptions)
-            .on('mouseover',function(){
-                this.bindPopup(`${item['Country']} <br> Labor Indicators Score: ${item['OverallFairLabor']}`).openPopup()
-            }) // show data on hover
-            markers.addLayer(marker)    
-        }
-        
-        if(item.ExtremePoor != undefined){
-            let Pmarker = L.marker([item.Latitude, item.Longitude])
-            .on('click', function(){
-                this.bindPopup(`${item['Country']} <br> Extreme Poverty Rate: ${item['ExtremePoor']} <br> Moderate Poverty Rate: ${item['ModeratePoor']} <br> Near Poverty Rate: ${item['NearPoor']}`).openPopup()
-            })
-            povertyMarkers.addLayer(Pmarker)
-        } 
-    });
+	// loop through each entry
+   csvdata.data.forEach(function(item,index){
+		/*if(casestudy = true){
+			create infoPanel, 
+			markers.addLayer(marker);
+		}*/
+	}); 
 
-    markers.addTo(map)
-    povertyMarkers.addTo(map)
-
-    let layers = {
-        "All Working Poverty Rates": povertyMarkers,
-        "Labor Index Score": markers,
-        "Moderate Working Poverty Rates": geojson_layer
-        
-    }
-
-    L.control.layers(null,layers).addTo(map)
-
-    map.fitBounds(markers.getBounds())
-}
-
-// function to get the geojson data
-    function getGeoJSON(){
-
-    $.getJSON(geojsonPath,function(data){ 
-        console.log(data)
-
-        // put the data in a global variable
-        geojson_data = data;
-
-        // call the map function
-        // add a field to be used
-        mapGeoJSON('ModeratePoor')
-
-    })
-}
-
-function mapGeoJSON(field){
-
-   // clear layers in case it has been mapped already
-    if (geojson_layer){
-        geojson_layer.clearLayers()
-    }
-    
-    // globalize the field to map. what does this mean?
-    fieldtomap = field;
-
-    // create an empty array
-    let values = [];
-
-    // based on the provided field, enter each value into the array
-    geojson_data.features.forEach(function(item,index){
-        values.push(item.properties[field])
-    })
-
-    // set up the "brew" options
-	brew.setSeries(values);
-	brew.setNumClasses(5);
-	brew.setColorCode('YlOrRd');
-	brew.classify('quantiles');
-    
-    // create the layer and add to map
-    geojson_layer = L.geoJson(geojson_data, {
-        style: getStyle, //call a function to style each feature
-        onEachFeature: onEachFeature // actions on each feature
-    }).addTo(map);
-
-    // fit to bounds
-    map.fitBounds(geojson_layer.getBounds())
-
-    //create Legend
-    
-
-    //create Info Panel
-    createInfoPanel();
+	markers.addTo(map)
 }
 
 // style each feature
-function getStyle(feature){
-    return {
-        stroke: true, // adds an outline
-        color: 'white', // outline color
-        weight: 1, // outline width
-        fill: true,
-		fillColor: brew.getColorInRange(feature.properties[fieldtomap]),
-        fillOpacity: 0.8
-    }
+function getStyleEP(feature){
+	if (feature.properties[extrPov] == -1){
+		return {
+			stroke: false, 
+			fill: true, 
+			fillColor: 'brown',
+			fillOpacity: 1
+		}
+	}
+	else {
+		return {
+			stroke: false,
+			fill: true,
+			fillColor: brewEP.getColorInRange(feature.properties[extrPov]),
+			fillOpacity: 0.4
+		}
+	}
 }
 
-// return the color for each feature based on population count
-function getColor(d) {
-
-    return d > 40 ? '#800026' :
-           d > 30  ? '#BD0026' :
-           d > 20  ? '#E31A1C' :
-           d > 10  ? '#FC4E2A' :
-           d > 0   ? '#FD8D3C' :
-           '#FFFFFF';
+function getStyleMP(feature){
+	if (feature.properties[modPov] == -1){
+		return {
+			stroke: false, 
+			fill: true, 
+			fillColor: 'brown',
+			fillOpacity: 1
+		}
+	}
+	else {
+		return {
+			stroke: false,
+			fill: true,
+			fillColor: brewEP.getColorInRange(feature.properties[modPov]),
+			fillOpacity: 0.4
+		}
+	}
 }
 
-// adding interaction 
-
-// adding legend
-
-
-// Function that defines what will happen on user interactions with each feature
-function onEachFeature(feature, layer) {
-    layer.on({
-        mouseover: highlightFeature,
-        mouseout: resetHighlight,
-        click: zoomToFeature
-    });
+function getStyleNP(feature){
+	if (feature.properties[nPov] == -1){
+		return {
+			stroke: false, 
+			fill: true, 
+			fillColor: 'brown',
+			fillOpacity: 1
+		}
+	}
+	else {
+		return {
+			stroke: false,
+			fill: true,
+			fillColor: brewEP.getColorInRange(feature.properties[nPov]),
+			fillOpacity: 0.4
+		}
+	}
 }
 
-// on mouse over, highlight the feature
-function highlightFeature(e) {
-    var layer = e.target;
-
-    // style to use on mouse over
-    layer.setStyle({
-        weight: 2,
-        color: '#666',
-        fillOpacity: 0.7
-    });
-
-    // if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-    //  layer.bringToFront();
-    // }
-
-    info_panel.update(layer.feature.properties)
+function getStyle2(feature){
+	if (feature.properties[extrPov] == -1){
+		return {
+			stroke: false, 
+			fill: true, 
+			fillColor: 'brown',
+			fillOpacity: 1
+		}
+	}
+	else {
+		return {
+			stroke: false,
+			fill: true,
+			fillColor: brew2.getColorInRange(feature.properties[labInd]),
+			fillOpacity: 0.8
+		}
+	}
 }
 
-// on mouse out, reset the style, otherwise, it will remain highlighted
-function resetHighlight(e) {
-    geojson_layer.resetStyle(e.target);
-    info_panel.update() // resets infopanel
-}
 
-// on mouse click on a feature, zoom in to it
-function zoomToFeature(e) {
-    map.fitBounds(e.target.getBounds());
+function createLegend(){
+	legend.onAdd = function (map) {
+		var div = L.DomUtil.create('div', 'info legend');
+			div.innerHTML +=
+					'Relationship: <br> <img src= images/legend.png width = 150 height = 150>';
+		
+			return div;
+		};
+		
+		legend.addTo(map);
 }
 
 function createInfoPanel(){
 
-    info_panel.onAdd = function (map) {
-        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-        this.update();
-        return this._div;
-    };
+	info_panel.onAdd = function(map) {
+		this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+		this.update();
+		return this._div;
+	};
 
-    // method that we will use to update the control based on feature properties passed
-    info_panel.update = function (properties) {
-        // if feature is highlighted
-        if(properties){
-            this._div.innerHTML = `<b><h3>${properties.Country}</h3></b><b>Moderate Poor Poverty Rates</b> : ${properties[fieldtomap]}<br><b>Labor Index</b> :${properties.OverallFairLabor}`;
-        }
-        // if feature is not highlighted
-        else
-        {
-            this._div.innerHTML = 'Hover over a country';
-        }
-    };
+	// method that we will use to update the control based on feature properties passed
+	info_panel.update = function(properties) {
+		// if feature is highlighted
+		if(properties){
+			if (properties[extrPov] == -1){
+				this._div.innerHTML = `<b>${properties.Country}</b><br>Working poverty rate unavailable <br>Labor Rights Index: ${properties[labInd]}`;
+			}
+			else {
+				this._div.innerHTML = `<b>${properties.Country}</b><br> Extreme poverty rate: ${properties[extrPov]}% <br> Moderate poverty rate: ${properties[modPov]}% <br> Near poverty rate: ${properties[nPov]}% <br> Labor Rights Index: ${properties[labInd]}`;
+			}
+			
+		}
+		// if feature is not highlighted
+		else
+		{
+			this._div.innerHTML = 'Hover over a country';
+		}
+	};
 
-    info_panel.addTo(map);
+	info_panel.addTo(map);
 }
 
+
+
+// Function that defines what will happen on user interactions with each feature
+function onEachFeatureEP(feature, layer) {
+	layer.on({
+		mouseover: highlightFeature, 
+		mouseout: resetHighlightEP,
+		click: zoomToFeature
+	});
+}
+
+function onEachFeatureMP(feature, layer) {
+	layer.on({
+		mouseover: highlightFeature,
+		mouseout: resetHighlightMP,
+		click: zoomToFeature
+	});
+}
+
+function onEachFeatureNP(feature, layer) {
+	layer.on({
+		mouseover: highlightFeature,
+		mouseout: resetHighlightNP,
+		click: zoomToFeature
+	});
+}
+
+function onEachFeature2(feature, layer) {
+	layer.on({
+		mouseover: highlightFeature,
+		mouseout: resetHighlight,
+		click: zoomToFeature
+	});
+}
+
+// on mouse over, highlight the feature
+function highlightFeature(e) {
+	var layer = e.target;
+
+	// style to use on mouse over
+	layer.setStyle({
+		weight: 2,
+		stroke: true, 
+		color: '#ffffff',
+		fillColor: '#000000', 
+		fillOpacity: 0.6, 
+	});
+
+	if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+		layer.bringToFront();
+	}
+
+	info_panel.update(layer.feature.properties);
+
+	// create Dashboard
+	createDashboard(layer.feature.properties)
+
+}
+
+// on mouse out, reset the style, otherwise, it will remain highlighted
+function resetHighlight(e) {
+	geojson_layer2.resetStyle(e.target);
+	info_panel.update() // resets infopanel
+}
+
+function resetHighlightEP(e) {
+	geojson_layerEP.resetStyle(e.target);
+	info_panel.update() // resets infopanel
+}
+function resetHighlightMP(e) {
+	geojson_layerMP.resetStyle(e.target);
+	info_panel.update() // resets infopanel
+}
+function resetHighlightNP(e) {
+	geojson_layerNP.resetStyle(e.target);
+	info_panel.update() // resets infopanel
+}
+
+// on mouse click on a feature, zoom in to it
+function zoomToFeature(e) {
+	map.fitBounds(e.target.getBounds());
+}
+
+
+// add Create DashBoard function 
+function createDashboard(properties){
+
+	// clear dashboard
+	$('.dashboard').empty();
+
+	console.log(properties)
+
+	// chart title
+	let title = 'Overall Labor Index Score';
+
+	// data values - issue is that it is being read as a string by apexcharts 
+	let graphdata = [];
+
+	geojson_data.features.forEach(function(item,index){
+		if(item.properties['OverallFairLabor']!= undefined && item.properties['OverallFairLabor'] != '')
+		{
+            graphdata.push(parseFloat(item.properties['OverallFairLabor']))
+        }});
+
+	// data fields
+	let fields = properties['NAME']
+
+	// set chart options
+	let options = {
+		chart: {
+			type: 'bar',
+			height: 200,
+			animations: {
+				enabled: false,
+			}
+		},
+		title: {
+			text: title,
+		},
+		plotOptions: {
+			bar: {
+				vertical: true
+			}
+		},
+		series: [
+			{
+				data: graphdata
+			}
+		],
+		xaxis: {
+			categories: fields
+		}
+	}
+	
+	// create the chart
+	let chart = new ApexCharts(document.querySelector('.dashboard'), options)
+	chart.render()
+}
