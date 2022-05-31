@@ -405,7 +405,7 @@ function createDashboard(properties){
 	let graphdata = [];
 
 	geojson_data.features.forEach(function(item,index){
-		if(item.properties['OverallFairLabor']!= undefined && item.properties['OverallFairLabor'] != '')
+		if(item.properties['OverallFairLabor']!== undefined && item.properties['OverallFairLabor'] !== '')
 		{
             graphdata.push(parseFloat(item.properties['OverallFairLabor']))
         }});
